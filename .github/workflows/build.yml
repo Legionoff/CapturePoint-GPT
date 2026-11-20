@@ -201,15 +201,15 @@ jobs:
           manager = Path("src/main/java/com/capturepoint/core/CapturePointManager.java")
           m = manager.read_text()
           old = "    public static void assign(ServerPlayer player, Team team) { teams.put(player.getUUID(), team); saveTeams(); }"
-          new = old + "\\n    public static void unassign(ServerPlayer player) { teams.remove(player.getUUID()); saveTeams(); }"
+          new = old + "\n    public static void unassign(ServerPlayer player) { teams.remove(player.getUUID()); saveTeams(); }"
           if old not in m: raise SystemExit("assign method not found")
           manager.write_text(m.replace(old, new))
 
           commands = Path("src/main/java/com/capturepoint/command/CapturePointCommands.java")
           c = commands.read_text()
-          team_start = c.find('literal("team")')
-          list_pos = c.find('literal("list").executes(ctx -> {', team_start)
-          if team_start < 0 or list_pos < 0: raise SystemExit("team command section not found")
+          roster_pos = c.find('Team roster:')
+          list_pos = c.rfind('.then(Commands.literal("list")', 0, roster_pos)
+          if roster_pos < 0 or list_pos < 0: raise SystemExit("team roster command section not found")
           insert = """                .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).executes(ctx -> {
                     String playerName = StringArgumentType.getString(ctx, "player");
                     ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
@@ -276,7 +276,7 @@ jobs:
               p = Path(f"src/main/resources/assets/capturepoint/lang/{locale}.json")
               data = json.loads(p.read_text(encoding="utf-8"))
               data["gui.capturepoint.remove_team"] = label
-              p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+              p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
           PY
           echo "Source files restored:"
           wc -c src/main/java/com/capturepoint/*.java src/main/java/com/capturepoint/command/*.java src/main/java/com/capturepoint/core/*.java
