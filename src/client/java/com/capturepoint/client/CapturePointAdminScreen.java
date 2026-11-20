@@ -45,21 +45,22 @@ public final class CapturePointAdminScreen extends Screen {
                 }
                 case POINTS -> {
                     pointName = edit(left, y, 305, "gui.capturepoint.point_name", "gui.capturepoint.point_hint"); y += gap;
-                    addRenderableWidget(button("gui.capturepoint.create_point", left, y, w, () -> withPoint("point create")));
-                    addRenderableWidget(button("gui.capturepoint.set_center", right, y, w, () -> withPoint("point center"))); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.create_point", left, y, 305, () -> withPoint("point create"))); y += gap;
                     addRenderableWidget(button("gui.capturepoint.pos1", left, y, w, () -> withPoint("point pos1")));
                     addRenderableWidget(button("gui.capturepoint.pos2", right, y, w, () -> withPoint("point pos2"))); y += gap;
                     orderIndex = edit(left, y, 65, "gui.capturepoint.order", "gui.capturepoint.order_hint");
                     addRenderableWidget(button("gui.capturepoint.move_point", left + 75, y, 155, this::movePoint)); y += gap;
-                    addRenderableWidget(button("gui.capturepoint.remove_point", left, y, w, () -> withPoint("point remove")));
-                    addRenderableWidget(button("gui.capturepoint.list", right, y, w, () -> run("cappoint list")));
+                    addRenderableWidget(button("gui.capturepoint.set_center", left, y, w, () -> withPoint("point center")));
+                    addRenderableWidget(button("gui.capturepoint.remove_point", right, y, w, () -> withPoint("point remove"))); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.list", left, y, 305, () -> run("cappoint list")));
                 }
                 case TEAMS -> {
                     playerName = edit(left, y, 305, "gui.capturepoint.player", "gui.capturepoint.player_hint"); y += gap;
                     addRenderableWidget(button("gui.capturepoint.assign_blue", left, y, w, () -> assignTeam("BLUE")));
                     addRenderableWidget(button("gui.capturepoint.assign_red", right, y, w, () -> assignTeam("RED"))); y += gap;
                     addRenderableWidget(button("gui.capturepoint.random_teams", left, y, 305, () -> run("cappoint team random"))); y += gap;
-                    addRenderableWidget(button("gui.capturepoint.list_teams", left, y, 305, () -> run("cappoint team list")));
+                    addRenderableWidget(button("gui.capturepoint.remove_team", left, y, w, () -> removeFromTeam()));
+                    addRenderableWidget(button("gui.capturepoint.list_teams", right, y, w, () -> run("cappoint team list")));
                 }
                 case SAVED -> {
                     roundName = edit(left, y, 305, "gui.capturepoint.round_name", "gui.capturepoint.round_hint"); y += gap;
@@ -96,6 +97,10 @@ public final class CapturePointAdminScreen extends Screen {
     private void assignTeam(String team) {
         if (playerName != null && playerName.getValue().trim().matches("[A-Za-z0-9_]{1,16}"))
             run("cappoint team set " + playerName.getValue().trim() + " " + team);
+    }
+    private void removeFromTeam() {
+        if (playerName != null && playerName.getValue().trim().matches("[A-Za-z0-9_]{1,16}"))
+            run("cappoint team set " + playerName.getValue().trim() + " NONE");
     }
     private void withRound(String action) {
         if (roundName != null && roundName.getValue().trim().matches("[A-Za-z0-9_-]{1,40}"))
