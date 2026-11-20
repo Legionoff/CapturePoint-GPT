@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -40,6 +40,16 @@ jobs:
           cp /tmp/capturepoint-import/CapturePoint/settings.gradle ./settings.gradle
           echo "Source files restored:"
           wc -c src/main/java/com/capturepoint/*.java src/main/java/com/capturepoint/command/*.java src/main/java/com/capturepoint/core/*.java
+
+      - name: Commit restored source files to repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src build.gradle gradle.properties settings.gradle
+          if ! git diff --cached --quiet; then
+            git commit -m "Restore actual Capture Point source files [skip ci]"
+            git push
+          fi
 
       - name: Build mod
         run: gradle --no-daemon clean build
