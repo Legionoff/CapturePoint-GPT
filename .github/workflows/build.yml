@@ -193,6 +193,90 @@ jobs:
               data["gui.capturepoint.back"] = label
               p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
           PY
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+
+          # Add a persistent unassign operation; null team values are not used in storage.
+          manager = Path("src/main/java/com/capturepoint/core/CapturePointManager.java")
+          m = manager.read_text()
+          old = "    public static void assign(ServerPlayer player, Team team) { teams.put(player.getUUID(), team); saveTeams(); }"
+          new = old + "\\n    public static void unassign(ServerPlayer player) { teams.remove(player.getUUID()); saveTeams(); }"
+          if old not in m: raise SystemExit("assign method not found")
+          manager.write_text(m.replace(old, new))
+
+          commands = Path("src/main/java/com/capturepoint/command/CapturePointCommands.java")
+          c = commands.read_text()
+          needle = """                .then(Commands.literal("list").executes(ctx -> {
+                    ctx.getSource().sendSuccess(() -> Component.literal("Team roster:").withStyle(ChatFormatting.GOLD), false);"""
+          insert = """                .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).executes(ctx -> {
+                    String playerName = StringArgumentType.getString(ctx, "player");
+                    ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
+                    if (target == null) { ctx.getSource().sendFailure(Component.literal("Player not found or offline.")); return 0; }
+                    CapturePointManager.unassign(target);
+                    ctx.getSource().sendSuccess(() -> Component.literal(playerName + " removed from teams."), false);
+                    return 1;
+                })))
+          """ + needle
+          if needle not in c: raise SystemExit("team list command insertion point not found")
+          commands.write_text(c.replace(needle, insert, 1))
+
+          screen = Path("src/client/java/com/capturepoint/client/CapturePointAdminScreen.java")
+          u = screen.read_text()
+          old_team = """                    addRenderableWidget(button("gui.capturepoint.random_teams", left, y, 305, () -> run("cappoint team random"))); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.list_teams", left, y, 305, () -> run("cappoint team list")));"""
+          new_team = """                    addRenderableWidget(button("gui.capturepoint.random_teams", left, y, 305, () -> run("cappoint team random"))); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.remove_team", left, y, w, () -> removeFromTeam()));
+                    addRenderableWidget(button("gui.capturepoint.list_teams", right, y, w, () -> run("cappoint team list")));"""
+          if old_team not in u: raise SystemExit("team screen block not found")
+          u = u.replace(old_team, new_team, 1)
+          old_helper = """              private void assignTeam(String team) {
+                  if (playerName != null && playerName.getValue().trim().matches("[A-Za-z0-9_]{1,16}"))
+                      run("cappoint team set " + playerName.getValue().trim() + " " + team);
+              }"""
+          new_helper = old_helper + """
+              private void removeFromTeam() {
+                  if (playerName != null && playerName.getValue().trim().matches("[A-Za-z0-9_]{1,16}"))
+                      run("cappoint team remove " + playerName.getValue().trim());
+              }"""
+          if old_helper not in u: raise SystemExit("team helper not found")
+          u = u.replace(old_helper, new_helper, 1)
+
+          # Reorganize point setup into a guided sequence with a full-width create action.
+          old_points = """                    pointName = edit(left, y, 305, "gui.capturepoint.point_name", "gui.capturepoint.point_hint"); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.create_point", left, y, w, () -> withPoint("point create")));
+                    addRenderableWidget(button("gui.capturepoint.set_center", right, y, w, () -> withPoint("point center"))); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.pos1", left, y, w, () -> withPoint("point pos1")));
+                    addRenderableWidget(button("gui.capturepoint.pos2", right, y, w, () -> withPoint("point pos2"))); y += gap;
+                    orderIndex = edit(left, y, 65, "gui.capturepoint.order", "gui.capturepoint.order_hint");
+                    addRenderableWidget(button("gui.capturepoint.move_point", left + 75, y, 155, this::movePoint)); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.remove_point", left, y, w, () -> withPoint("point remove")));
+                    addRenderableWidget(button("gui.capturepoint.list", right, y, w, () -> run("cappoint list")));"""
+          new_points = """                    pointName = edit(left, y, 305, "gui.capturepoint.point_name", "gui.capturepoint.point_hint"); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.create_point", left, y, 305, () -> withPoint("point create"))); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.pos1", left, y, w, () -> withPoint("point pos1")));
+                    addRenderableWidget(button("gui.capturepoint.pos2", right, y, w, () -> withPoint("point pos2"))); y += gap;
+                    orderIndex = edit(left, y, 65, "gui.capturepoint.order", "gui.capturepoint.order_hint");
+                    addRenderableWidget(button("gui.capturepoint.move_point", left + 75, y, 155, this::movePoint)); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.set_center", left, y, w, () -> withPoint("point center")));
+                    addRenderableWidget(button("gui.capturepoint.remove_point", right, y, w, () -> withPoint("point remove"))); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.list", left, y, 305, () -> run("cappoint list")));"""
+          if old_points not in u: raise SystemExit("point screen block not found")
+          u = u.replace(old_points, new_points, 1)
+          screen.write_text(u)
+
+          labels = {
+            "ru_ru": "Убрать из команды",
+            "en_us": "Remove from team",
+            "de_de": "Aus Team entfernen",
+            "uk_ua": "Вилучити з команди"
+          }
+          for locale, label in labels.items():
+              p = Path(f"src/main/resources/assets/capturepoint/lang/{locale}.json")
+              data = json.loads(p.read_text(encoding="utf-8"))
+              data["gui.capturepoint.remove_team"] = label
+              p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+          PY
           echo "Source files restored:"
           wc -c src/main/java/com/capturepoint/*.java src/main/java/com/capturepoint/command/*.java src/main/java/com/capturepoint/core/*.java
 
