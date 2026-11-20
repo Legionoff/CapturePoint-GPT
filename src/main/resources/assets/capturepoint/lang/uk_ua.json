@@ -13,10 +13,10 @@
   "gui.capturepoint.point_name": "Назва точки",
   "gui.capturepoint.point_hint": "Назва без пробілів",
   "gui.capturepoint.create_point": "Створити тут",
-  "gui.capturepoint.pos1": "Встановити pos1 тут",
-  "gui.capturepoint.pos2": "Встановити pos2 тут",
-  "gui.capturepoint.set_center": "Зробити центральною",
-  "gui.capturepoint.remove_point": "Видалити точку",
+  "gui.capturepoint.pos1": "Встановити POS1",
+  "gui.capturepoint.pos2": "Встановити POS2",
+  "gui.capturepoint.set_center": "Центр",
+  "gui.capturepoint.remove_point": "Видалити",
   "gui.capturepoint.order": "Порядок",
   "gui.capturepoint.move_point": "Перемістити на №",
   "gui.capturepoint.random_teams": "Випадковий баланс команд",
@@ -28,7 +28,7 @@
   "gui.capturepoint.save_round": "Зберегти раунд",
   "gui.capturepoint.load_round": "Завантажити раунд",
   "gui.capturepoint.player": "Ім'я гравця",
-  "gui.capturepoint.player_hint": "Ім'я гравця онлайн",
+  "gui.capturepoint.player_hint": "Нік гравця",
   "gui.capturepoint.assign_blue": "Призначити BLUE",
   "gui.capturepoint.assign_red": "Призначити RED",
   "gui.capturepoint.close": "Закрити",
@@ -57,5 +57,7 @@
   "gui.capturepoint.remove_team": "Вилучити з команди",
   "gui.capturepoint.add_point": "Додати точку",
   "gui.capturepoint.loading": "Завантаження даних сервера…",
-  "gui.capturepoint.no_points": "Точок ще немає"
+  "gui.capturepoint.no_points": "Точок ще немає",
+  "gui.capturepoint.capture_short": "Захоплення",
+  "gui.capturepoint.hold_short": "Утримання"
 }
