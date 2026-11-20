@@ -39,6 +39,8 @@ jobs:
           cp /tmp/capturepoint-import/CapturePoint/build.gradle ./build.gradle
           cp /tmp/capturepoint-import/CapturePoint/gradle.properties ./gradle.properties
           cp /tmp/capturepoint-import/CapturePoint/settings.gradle ./settings.gradle
+          # Minecraft 26.1+ uses unobfuscated Loom: mod dependencies use implementation.
+          sed -i 's/\bmodImplementation\b/implementation/g' build.gradle
           echo "Source files restored:"
           wc -c src/main/java/com/capturepoint/*.java src/main/java/com/capturepoint/command/*.java src/main/java/com/capturepoint/core/*.java
 
