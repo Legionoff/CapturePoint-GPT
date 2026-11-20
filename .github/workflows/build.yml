@@ -207,20 +207,21 @@ jobs:
 
           commands = Path("src/main/java/com/capturepoint/command/CapturePointCommands.java")
           c = commands.read_text()
-          insert_pos = c.rfind("        );")
-          if insert_pos < 0: raise SystemExit("command dispatcher close not found")
-          insert = """            .then(Commands.literal("team").requires(ADMIN_PERMISSION)
-                .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).executes(ctx -> {
-                    String playerName = StringArgumentType.getString(ctx, "player");
-                    ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
-                    if (target == null) { ctx.getSource().sendFailure(Component.literal("Player not found or offline.")); return 0; }
-                    CapturePointManager.unassign(target);
-                    ctx.getSource().sendSuccess(() -> Component.literal(playerName + " removed from teams."), false);
-                    return 1;
-                })))
-            )
+          anchor = 'dispatcher.register(Commands.literal("cappoint")'
+          if anchor not in c: raise SystemExit("cappoint dispatcher root not found")
+          insert = """dispatcher.register(Commands.literal("cappoint")
+              .then(Commands.literal("team").requires(ADMIN_PERMISSION)
+                  .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).executes(ctx -> {
+                      String playerName = StringArgumentType.getString(ctx, "player");
+                      ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
+                      if (target == null) { ctx.getSource().sendFailure(Component.literal("Player not found or offline.")); return 0; }
+                      CapturePointManager.unassign(target);
+                      ctx.getSource().sendSuccess(() -> Component.literal(playerName + " removed from teams."), false);
+                      return 1;
+                  })))
+              )
           """
-          c = c[:insert_pos] + insert + c[insert_pos:]
+          c = c.replace(anchor, insert, 1)
           commands.write_text(c)
 
           screen = Path("src/client/java/com/capturepoint/client/CapturePointAdminScreen.java")
