@@ -97,7 +97,7 @@ public final class CapturePointAdminScreen extends Screen {
             case SETTINGS -> "gui.capturepoint.tab_settings";
             case SAVED -> "gui.capturepoint.tab_saved";
         };
-        return Button.builder(Component.translatable(key), b -> minecraft.setScreen(new CapturePointAdminScreen(target)))
+        return Button.builder(Component.translatable(key), b -> minecraft.gui.setScreen(new CapturePointAdminScreen(target)))
                 .bounds(x, y, width, 18).build();
     }
 

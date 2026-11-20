@@ -31,7 +31,7 @@ public final class CapturePointClient implements ClientModInitializer {
                 if (canUseAdminCommands) {
                     client.gui.setScreen(new CapturePointAdminScreen());
                 } else {
-                    client.player.displayClientMessage(Component.translatable("message.capturepoint.admin_only"), true);
+                    client.player.sendOverlayMessage(Component.translatable("message.capturepoint.admin_only"));
                 }
             }
         });
