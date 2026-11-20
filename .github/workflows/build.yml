@@ -207,8 +207,8 @@ jobs:
 
           commands = Path("src/main/java/com/capturepoint/command/CapturePointCommands.java")
           c = commands.read_text()
-          time_pos = c.find('.then(Commands.literal("time").requires(ADMIN_PERMISSION)')
-          if time_pos < 0: raise SystemExit("root time command not found")
+          insert_pos = c.rfind("        );")
+          if insert_pos < 0: raise SystemExit("command dispatcher close not found")
           insert = """            .then(Commands.literal("team").requires(ADMIN_PERMISSION)
                 .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).executes(ctx -> {
                     String playerName = StringArgumentType.getString(ctx, "player");
@@ -220,7 +220,7 @@ jobs:
                 })))
             )
           """
-          c = c[:time_pos] + insert + c[time_pos:]
+          c = c[:insert_pos] + insert + c[insert_pos:]
           commands.write_text(c)
 
           screen = Path("src/client/java/com/capturepoint/client/CapturePointAdminScreen.java")
