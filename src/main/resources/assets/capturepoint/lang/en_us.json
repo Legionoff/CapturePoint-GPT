@@ -53,5 +53,6 @@
   "gui.capturepoint.order_hint": "1-based order",
   "gui.capturepoint.seconds_hint": "1–3600 seconds",
   "gui.capturepoint.list_rounds": "List saved rounds",
-  "gui.capturepoint.back": "Back"
+  "gui.capturepoint.back": "Back",
+  "gui.capturepoint.remove_team": "Remove from team"
 }
