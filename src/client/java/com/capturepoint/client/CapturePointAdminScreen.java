@@ -156,10 +156,9 @@ public final class CapturePointAdminScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-        extractBackground(graphics, mouseX, mouseY, delta);
+        super.extractRenderState(graphics, mouseX, mouseY, delta);
         graphics.centeredText(font, title, width / 2, 15, 0xFFFFFFFF);
         graphics.centeredText(font, Component.translatable("gui.capturepoint.subtitle"), width / 2, 29, 0xFFAAB7C4);
-        super.extractRenderState(graphics, mouseX, mouseY, delta);
     }
 
     @Override
