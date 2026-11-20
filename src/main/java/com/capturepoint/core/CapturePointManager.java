@@ -75,6 +75,7 @@ public final class CapturePointManager {
     private static int captureTicks;
     private static int holdTicks;
     private static int tickCounter;
+    private static int boundaryTickCounter;
 
     private CapturePointManager() { }
 
@@ -98,8 +99,11 @@ public final class CapturePointManager {
     public static void tick(MinecraftServer minecraftServer) {
         server = minecraftServer;
         boolean timerTick = ++tickCounter >= 40;
-        if (timerTick) {
-            tickCounter = 0;
+        if (timerTick) tickCounter = 0;
+
+        // Dust particles are short-lived: refresh the outline frequently so it stays visible.
+        if (++boundaryTickCounter >= 2) {
+            boundaryTickCounter = 0;
             drawAllBoundaries(minecraftServer);
         }
         if (!running || paused || phase == Phase.COMPLETE || activeIndex < 0 || activeIndex >= round.points.size()) return;
@@ -190,31 +194,45 @@ public final class CapturePointManager {
         for (int i = 0; i < round.points.size(); i++) {
             PointDef point = round.points.get(i);
             if (!point.isComplete()) continue;
+
             Team pointOwner = parseTeam(point.owner);
-            int color = 0xA0A0A0;
+            int color = i == round.centerIndex ? 0xF3C846 : 0xA0A0A0;
             if (pointOwner != null) color = pointOwner == Team.BLUE ? 0x2878FF : 0xE52B32;
             if (i == activeIndex && capturingTeam != null) {
                 boolean holding = phase == Phase.HOLDING || (phase == Phase.PAUSED && phaseBeforePause == Phase.HOLDING);
                 if (capturingTeam == Team.BLUE) color = holding ? 0x1768FF : 0x83B8FF;
                 else color = holding ? 0xF0202A : 0xFF9A9F;
             }
-            DustParticleOptions dust = new DustParticleOptions(color, 0.85f);
+
+            DustParticleOptions dust = new DustParticleOptions(color, 0.70f);
             for (ServerLevel level : s.getAllLevels()) {
-                if (!level.dimension().identifier().toString().equals(point.dimension)) continue;
-                int minX = Math.min(point.x1, point.x2), maxX = Math.max(point.x1, point.x2);
-                int minZ = Math.min(point.z1, point.z2), maxZ = Math.max(point.z1, point.z2);
-                double y = Math.min(point.y1, point.y2) + 1.02;
-                drawEdge(level, dust, minX, minZ, maxX + 1, minZ, y);
-                drawEdge(level, dust, maxX + 1, minZ, maxX + 1, maxZ + 1, y);
-                drawEdge(level, dust, maxX + 1, maxZ + 1, minX, maxZ + 1, y);
-                drawEdge(level, dust, minX, maxZ + 1, minX, minZ, y);
+                if (level.dimension().identifier().toString().equals(point.dimension)) {
+                    // Draw this point from its own corners, never from a combined bounds of all points.
+                    drawPointBoundary(level, dust, point);
+                }
             }
         }
     }
 
-    private static void drawEdge(ServerLevel level, DustParticleOptions dust, int x1, int z1, int x2, int z2, double y) {
-        int length = Math.max(Math.abs(x2 - x1), Math.abs(z2 - z1));
-        int steps = Math.max(1, Math.min(32, (length + 2) / 3));
+    private static void drawPointBoundary(ServerLevel level, DustParticleOptions dust, PointDef point) {
+        // A small inset keeps neighboring capture zones visually separated.
+        double inset = 0.15d;
+        double minX = Math.min(point.x1, point.x2) + inset;
+        double maxX = Math.max(point.x1, point.x2) + 1.0d - inset;
+        double minZ = Math.min(point.z1, point.z2) + inset;
+        double maxZ = Math.max(point.z1, point.z2) + 1.0d - inset;
+        double y = Math.min(point.y1, point.y2) + 1.02d;
+
+        drawEdge(level, dust, minX, minZ, maxX, minZ, y);
+        drawEdge(level, dust, maxX, minZ, maxX, maxZ, y);
+        drawEdge(level, dust, maxX, maxZ, minX, maxZ, y);
+        drawEdge(level, dust, minX, maxZ, minX, minZ, y);
+    }
+
+    private static void drawEdge(ServerLevel level, DustParticleOptions dust,
+                                 double x1, double z1, double x2, double z2, double y) {
+        double length = Math.max(Math.abs(x2 - x1), Math.abs(z2 - z1));
+        int steps = Math.max(1, Math.min(128, (int) Math.ceil(length / 2.0d)));
         for (int i = 0; i <= steps; i++) {
             double t = (double) i / steps;
             double x = x1 + (x2 - x1) * t;
