@@ -4,27 +4,53 @@ on:
     branches: [ main ]
   pull_request:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
   build:
+    name: Compile Capture Point for Minecraft 26.3
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Java 25
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '25'
-      - name: Setup Gradle
+
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Build
-        run: gradle --no-daemon build
-      - name: Upload JAR
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Extract canonical source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          unzip -q CapturePoint-0.1.2-GitHub-Import.zip -d /tmp/capturepoint-import
+          test -f /tmp/capturepoint-import/CapturePoint/src/main/java/com/capturepoint/core/CapturePointManager.java
+          cp -a /tmp/capturepoint-import/CapturePoint/src ./src
+          cp /tmp/capturepoint-import/CapturePoint/build.gradle ./build.gradle
+          cp /tmp/capturepoint-import/CapturePoint/gradle.properties ./gradle.properties
+          cp /tmp/capturepoint-import/CapturePoint/settings.gradle ./settings.gradle
+          echo "Source files restored:"
+          wc -c src/main/java/com/capturepoint/*.java src/main/java/com/capturepoint/command/*.java src/main/java/com/capturepoint/core/*.java
+
+      - name: Build mod
+        run: gradle --no-daemon clean build
+
+      - name: Upload JAR and reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: CapturePoint-${{ github.sha }}
-          path: build/libs/*.jar
-          if-no-files-found: error
+          name: CapturePoint-build-${{ github.run_number }}
+          path: |
+            build/libs/*.jar
+            build/reports/**
+          if-no-files-found: warn
           retention-days: 14
