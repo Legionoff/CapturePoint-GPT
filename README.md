@@ -130,3 +130,5 @@ Retry: robust insertion for team unassign command.
 Build retry: fixed newline handling and roster command insertion.
 
 Retry build for team unassign action.
+
+Build retry: register team remove as an additional merged command branch.
