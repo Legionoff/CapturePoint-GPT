@@ -2,6 +2,8 @@ package com.capturepoint;
 
 import com.capturepoint.command.CapturePointCommands;
 import com.capturepoint.core.CapturePointManager;
+import com.capturepoint.network.CapturePointSyncPayload;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -17,6 +19,7 @@ public final class CapturePointMod implements ModInitializer {
     @Override
     public void onInitialize() {
         CapturePointManager.init();
+        PayloadTypeRegistry.clientboundPlay().register(CapturePointSyncPayload.TYPE, CapturePointSyncPayload.STREAM_CODEC);
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
                 CapturePointCommands.register(dispatcher));
         ServerTickEvents.END_SERVER_TICK.register(CapturePointManager::tick);
