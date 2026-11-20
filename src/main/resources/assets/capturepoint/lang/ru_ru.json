@@ -52,5 +52,6 @@
   "gui.capturepoint.tab_saved": "Сохранения",
   "gui.capturepoint.order_hint": "Номер позиции",
   "gui.capturepoint.seconds_hint": "1–3600 секунд",
-  "gui.capturepoint.list_rounds": "Список сохранённых раундов"
-}
+  "gui.capturepoint.list_rounds": "Список сохранённых раундов",
+  "gui.capturepoint.back": "Назад"
+}\n

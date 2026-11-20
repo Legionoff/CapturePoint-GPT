@@ -52,5 +52,6 @@
   "gui.capturepoint.tab_saved": "Saved rounds",
   "gui.capturepoint.order_hint": "1-based order",
   "gui.capturepoint.seconds_hint": "1–3600 seconds",
-  "gui.capturepoint.list_rounds": "List saved rounds"
-}
+  "gui.capturepoint.list_rounds": "List saved rounds",
+  "gui.capturepoint.back": "Back"
+}\n

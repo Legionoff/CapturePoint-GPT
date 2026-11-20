@@ -52,5 +52,6 @@
   "gui.capturepoint.tab_saved": "Gespeicherte Runden",
   "gui.capturepoint.order_hint": "Reihenfolge",
   "gui.capturepoint.seconds_hint": "1–3600 Sekunden",
-  "gui.capturepoint.list_rounds": "Gespeicherte Runden anzeigen"
-}
+  "gui.capturepoint.list_rounds": "Gespeicherte Runden anzeigen",
+  "gui.capturepoint.back": "Zurück"
+}\n

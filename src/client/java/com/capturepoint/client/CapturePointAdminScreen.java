@@ -24,7 +24,7 @@ public final class CapturePointAdminScreen extends Screen {
             addRenderableWidget(button("gui.capturepoint.tab_points", c - 150, 82, 300, () -> open(Page.POINTS)));
             addRenderableWidget(button("gui.capturepoint.tab_teams", c - 150, 122, 300, () -> open(Page.TEAMS)));
             addRenderableWidget(button("gui.capturepoint.tab_round", c - 150, 162, 300, () -> open(Page.ROUND)));
-            addRenderableWidget(button("gui.capturepoint.tab_saved", c - 150, 202, 300, () -> open(Page.SAVED)));
+            // Saved rounds are accessed from the Round section.
         } else {
             addRenderableWidget(button("gui.capturepoint.back", c - 155, 43, 92, () -> open(Page.HOME)));
             addRenderableWidget(button("gui.capturepoint.tab_points", c - 57, 43, 98, () -> open(Page.POINTS)));
@@ -42,6 +42,7 @@ public final class CapturePointAdminScreen extends Screen {
                     seconds.setValue("60"); y += gap;
                     addRenderableWidget(button("gui.capturepoint.capture_time", left, y, w, () -> setTime("capture")));
                     addRenderableWidget(button("gui.capturepoint.hold_time", right, y, w, () -> setTime("hold")));
+                    addRenderableWidget(button("gui.capturepoint.tab_saved", left, y + gap, 305, () -> open(Page.SAVED)));
                 }
                 case POINTS -> {
                     pointName = edit(left, y, 305, "gui.capturepoint.point_name", "gui.capturepoint.point_hint"); y += gap;
