@@ -13,10 +13,10 @@
   "gui.capturepoint.point_name": "Point name",
   "gui.capturepoint.point_hint": "Point name (no spaces)",
   "gui.capturepoint.create_point": "Create at my position",
-  "gui.capturepoint.pos1": "Set pos1 here",
-  "gui.capturepoint.pos2": "Set pos2 here",
-  "gui.capturepoint.set_center": "Make central point",
-  "gui.capturepoint.remove_point": "Remove point",
+  "gui.capturepoint.pos1": "Set POS1",
+  "gui.capturepoint.pos2": "Set POS2",
+  "gui.capturepoint.set_center": "Set center",
+  "gui.capturepoint.remove_point": "Delete",
   "gui.capturepoint.order": "Order",
   "gui.capturepoint.move_point": "Move to order #",
   "gui.capturepoint.random_teams": "Random team balance",
@@ -28,7 +28,7 @@
   "gui.capturepoint.save_round": "Save round",
   "gui.capturepoint.load_round": "Load round",
   "gui.capturepoint.player": "Player name",
-  "gui.capturepoint.player_hint": "Online player name",
+  "gui.capturepoint.player_hint": "Player name",
   "gui.capturepoint.assign_blue": "Assign BLUE",
   "gui.capturepoint.assign_red": "Assign RED",
   "gui.capturepoint.close": "Close",
@@ -57,5 +57,7 @@
   "gui.capturepoint.remove_team": "Remove from team",
   "gui.capturepoint.add_point": "Add point",
   "gui.capturepoint.loading": "Loading server data…",
-  "gui.capturepoint.no_points": "No points yet"
+  "gui.capturepoint.no_points": "No points yet",
+  "gui.capturepoint.capture_short": "Capture",
+  "gui.capturepoint.hold_short": "Hold"
 }
