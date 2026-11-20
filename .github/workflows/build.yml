@@ -207,8 +207,8 @@ jobs:
 
           commands = Path("src/main/java/com/capturepoint/command/CapturePointCommands.java")
           c = commands.read_text()
-          team_start = c.find('            .then(Commands.literal("team")')
-          list_pos = c.find('.then(Commands.literal("list").executes(ctx -> {', team_start)
+          team_start = c.find('literal("team")')
+          list_pos = c.find('literal("list").executes(ctx -> {', team_start)
           if team_start < 0 or list_pos < 0: raise SystemExit("team command section not found")
           insert = """                .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).executes(ctx -> {
                     String playerName = StringArgumentType.getString(ctx, "player");
