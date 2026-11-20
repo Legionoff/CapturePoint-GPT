@@ -97,7 +97,7 @@ public final class CapturePointManager {
 
     public static void tick(MinecraftServer minecraftServer) {
         server = minecraftServer;
-        boolean timerTick = ++tickCounter >= 20;
+        boolean timerTick = ++tickCounter >= 40;
         if (timerTick) {
             tickCounter = 0;
             drawAllBoundaries(minecraftServer);
@@ -214,7 +214,7 @@ public final class CapturePointManager {
 
     private static void drawEdge(ServerLevel level, DustParticleOptions dust, int x1, int z1, int x2, int z2, double y) {
         int length = Math.max(Math.abs(x2 - x1), Math.abs(z2 - z1));
-        int steps = Math.max(1, Math.min(80, length));
+        int steps = Math.max(1, Math.min(32, (length + 2) / 3));
         for (int i = 0; i <= steps; i++) {
             double t = (double) i / steps;
             double x = x1 + (x2 - x1) * t;
