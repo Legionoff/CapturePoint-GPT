@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "capturepoint",
+  "version": "${version}",
+  "name": "Capture Point",
+  "description": "Sector Breakthrough game mode with configurable capture sectors.",
+  "authors": ["Legionoff"],
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.capturepoint.CapturePointMod"],
+    "client": ["com.capturepoint.client.CapturePointClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.20.1",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
