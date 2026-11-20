@@ -120,3 +120,5 @@ The administrator panel now opens on a simplified home screen with dedicated Poi
 The home screen now focuses on the three primary areas: Points, Teams, and Round.
 
 Build note: corrected locale JSON output and tightened admin menu layout.
+
+UI update: added an explicit remove-from-team action and reorganized point setup into create, bounds, ordering, center/removal, and list steps.
