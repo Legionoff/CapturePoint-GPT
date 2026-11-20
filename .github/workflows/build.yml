@@ -207,9 +207,9 @@ jobs:
 
           commands = Path("src/main/java/com/capturepoint/command/CapturePointCommands.java")
           c = commands.read_text()
-          roster_pos = c.find('Team roster:')
-          list_pos = c.rfind('.then(Commands.literal("list")', 0, roster_pos)
-          if roster_pos < 0 or list_pos < 0: raise SystemExit("team roster command section not found")
+          random_pos = c.find("CapturePointManager.randomBalance()")
+          insert_pos = c.rfind('.then(Commands.literal("random")', 0, random_pos)
+          if random_pos < 0 or insert_pos < 0: raise SystemExit("team random command section not found")
           insert = """                .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).executes(ctx -> {
                     String playerName = StringArgumentType.getString(ctx, "player");
                     ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
@@ -219,7 +219,7 @@ jobs:
                     return 1;
                 })))
                 """
-          c = c[:list_pos] + insert + c[list_pos:]
+          c = c[:insert_pos] + insert + c[insert_pos:]
           commands.write_text(c)
 
           screen = Path("src/client/java/com/capturepoint/client/CapturePointAdminScreen.java")
