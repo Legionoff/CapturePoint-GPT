@@ -44,6 +44,25 @@ jobs:
           # Minecraft 26.2+ moved screen management to Gui; 26.3 renamed player overlay messaging.
           sed -i 's/minecraft\.setScreen(/minecraft.gui.setScreen(/g' src/client/java/com/capturepoint/client/CapturePointAdminScreen.java
           sed -i 's/displayClientMessage(\(.*\), true);/sendOverlayMessage(\1);/' src/client/java/com/capturepoint/client/CapturePointClient.java
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("src/client/java/com/capturepoint/client/CapturePointAdminScreen.java")
+          s = p.read_text()
+          old = """    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+                  extractBackground(graphics, mouseX, mouseY, delta);
+                  graphics.centeredText(font, title, width / 2, 15, 0xFFFFFFFF);
+                  graphics.centeredText(font, Component.translatable("gui.capturepoint.subtitle"), width / 2, 29, 0xFFAAB7C4);
+                  super.extractRenderState(graphics, mouseX, mouseY, delta);
+              }"""
+          new = """    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+                  super.extractRenderState(graphics, mouseX, mouseY, delta);
+                  graphics.centeredText(font, title, width / 2, 15, 0xFFFFFFFF);
+                  graphics.centeredText(font, Component.translatable("gui.capturepoint.subtitle"), width / 2, 29, 0xFFAAB7C4);
+              }"""
+          if old not in s:
+              raise SystemExit("Expected admin screen render method not found; refusing unsafe patch")
+          p.write_text(s.replace(old, new))
+          PY
           echo "Source files restored:"
           wc -c src/main/java/com/capturepoint/*.java src/main/java/com/capturepoint/command/*.java src/main/java/com/capturepoint/core/*.java
 
