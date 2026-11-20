@@ -132,3 +132,5 @@ Build retry: fixed newline handling and roster command insertion.
 Retry build for team unassign action.
 
 Build retry: register team remove as an additional merged command branch.
+
+Build retry: team unassign branch attached at dispatcher root.
