@@ -207,8 +207,9 @@ jobs:
 
           commands = Path("src/main/java/com/capturepoint/command/CapturePointCommands.java")
           c = commands.read_text()
-          needle = """                .then(Commands.literal("list").executes(ctx -> {
-                    ctx.getSource().sendSuccess(() -> Component.literal("Team roster:").withStyle(ChatFormatting.GOLD), false);"""
+          team_start = c.find('            .then(Commands.literal("team")')
+          list_pos = c.find('.then(Commands.literal("list").executes(ctx -> {', team_start)
+          if team_start < 0 or list_pos < 0: raise SystemExit("team command section not found")
           insert = """                .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).executes(ctx -> {
                     String playerName = StringArgumentType.getString(ctx, "player");
                     ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
@@ -217,9 +218,9 @@ jobs:
                     ctx.getSource().sendSuccess(() -> Component.literal(playerName + " removed from teams."), false);
                     return 1;
                 })))
-          """ + needle
-          if needle not in c: raise SystemExit("team list command insertion point not found")
-          commands.write_text(c.replace(needle, insert, 1))
+                """
+          c = c[:list_pos] + insert + c[list_pos:]
+          commands.write_text(c)
 
           screen = Path("src/client/java/com/capturepoint/client/CapturePointAdminScreen.java")
           u = screen.read_text()
