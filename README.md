@@ -136,3 +136,5 @@ Build retry: register team remove as an additional merged command branch.
 Build retry: team unassign branch attached at dispatcher root.
 
 Retry build: register team removal command at the cappoint root.
+
+Final retry: team removal is implemented via NONE on the existing team assignment command.
