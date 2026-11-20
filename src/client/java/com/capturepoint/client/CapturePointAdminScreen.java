@@ -6,7 +6,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-/** Simple, three-section administrator interface. All actions remain server-authorized commands. */
+/** Compact administrator UI with a clear home page and focused sections. */
 public final class CapturePointAdminScreen extends Screen {
     private enum Page { HOME, ROUND, POINTS, TEAMS, SAVED }
     private final Page page;
@@ -19,17 +19,16 @@ public final class CapturePointAdminScreen extends Screen {
     }
 
     @Override protected void init() {
-        int c = width / 2, left = c - 155, right = c + 5, w = 150, y = 92, gap = 27;
+        int c = width / 2, left = c - 155, right = c + 5, w = 150, y = 86, gap = 27;
         if (page == Page.HOME) {
-            addRenderableWidget(button("gui.capturepoint.tab_points", c - 150, 82, 300, () -> open(Page.POINTS)));
-            addRenderableWidget(button("gui.capturepoint.tab_teams", c - 150, 122, 300, () -> open(Page.TEAMS)));
-            addRenderableWidget(button("gui.capturepoint.tab_round", c - 150, 162, 300, () -> open(Page.ROUND)));
-            // Saved rounds are accessed from the Round section.
+            addRenderableWidget(button("gui.capturepoint.tab_points", c - 145, 88, 290, () -> open(Page.POINTS)));
+            addRenderableWidget(button("gui.capturepoint.tab_teams", c - 145, 130, 290, () -> open(Page.TEAMS)));
+            addRenderableWidget(button("gui.capturepoint.tab_round", c - 145, 172, 290, () -> open(Page.ROUND)));
         } else {
-            addRenderableWidget(button("gui.capturepoint.back", c - 155, 43, 92, () -> open(Page.HOME)));
-            addRenderableWidget(button("gui.capturepoint.tab_points", c - 57, 43, 98, () -> open(Page.POINTS)));
-            addRenderableWidget(button("gui.capturepoint.tab_teams", c + 45, 43, 98, () -> open(Page.TEAMS)));
-            addRenderableWidget(button("gui.capturepoint.tab_round", c + 147, 43, 98, () -> open(Page.ROUND)));
+            addRenderableWidget(button("gui.capturepoint.back", c - 155, 43, 70, () -> open(Page.HOME)));
+            addRenderableWidget(button("gui.capturepoint.tab_points", c - 79, 43, 78, () -> open(Page.POINTS)));
+            addRenderableWidget(button("gui.capturepoint.tab_teams", c + 5, 43, 78, () -> open(Page.TEAMS)));
+            addRenderableWidget(button("gui.capturepoint.tab_round", c + 89, 43, 66, () -> open(Page.ROUND)));
             switch (page) {
                 case ROUND -> {
                     addRenderableWidget(button("gui.capturepoint.start", left, y, w, () -> run("cappoint start")));
@@ -41,8 +40,8 @@ public final class CapturePointAdminScreen extends Screen {
                     seconds = edit(left, y, 305, "gui.capturepoint.seconds", "gui.capturepoint.seconds_hint");
                     seconds.setValue("60"); y += gap;
                     addRenderableWidget(button("gui.capturepoint.capture_time", left, y, w, () -> setTime("capture")));
-                    addRenderableWidget(button("gui.capturepoint.hold_time", right, y, w, () -> setTime("hold")));
-                    addRenderableWidget(button("gui.capturepoint.tab_saved", left, y + gap, 305, () -> open(Page.SAVED)));
+                    addRenderableWidget(button("gui.capturepoint.hold_time", right, y, w, () -> setTime("hold"))); y += gap;
+                    addRenderableWidget(button("gui.capturepoint.tab_saved", left, y, 305, () -> open(Page.SAVED)));
                 }
                 case POINTS -> {
                     pointName = edit(left, y, 305, "gui.capturepoint.point_name", "gui.capturepoint.point_hint"); y += gap;
@@ -82,9 +81,7 @@ public final class CapturePointAdminScreen extends Screen {
         EditBox box = new EditBox(font, x, y, w, 20, Component.translatable(label));
         box.setMaxLength(40); box.setHint(Component.translatable(hint)); addRenderableWidget(box); return box;
     }
-    private boolean validPoint() {
-        return pointName != null && pointName.getValue().trim().matches("[A-Za-z0-9_-]+");
-    }
+    private boolean validPoint() { return pointName != null && pointName.getValue().trim().matches("[A-Za-z0-9_-]+"); }
     private void withPoint(String action) { if (validPoint()) run("cappoint " + action + " " + pointName.getValue().trim()); }
     private void movePoint() {
         if (!validPoint() || orderIndex == null) return;
@@ -109,8 +106,7 @@ public final class CapturePointAdminScreen extends Screen {
     @Override public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         super.extractRenderState(graphics, mouseX, mouseY, delta);
         graphics.centeredText(font, title, width / 2, 15, 0xFFFFFFFF);
-        String subtitle = page == Page.HOME ? "Capture Point" : Component.translatable("gui.capturepoint.subtitle").getString();
-        graphics.centeredText(font, Component.literal(subtitle), width / 2, 29, 0xFFAAB7C4);
+        graphics.centeredText(font, Component.translatable("gui.capturepoint.subtitle"), width / 2, 29, 0xFFAAB7C4);
         if (page == Page.TEAMS) {
             graphics.centeredText(font, Component.literal("BLUE"), width / 2 - 78, 78, 0xFF5577FF);
             graphics.centeredText(font, Component.literal("RED"), width / 2 + 78, 78, 0xFFFF5555);
