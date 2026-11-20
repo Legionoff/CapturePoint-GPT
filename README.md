@@ -126,3 +126,5 @@ UI update: added an explicit remove-from-team action and reorganized point setup
 Retry build for team removal and point setup UI fixes.
 
 Retry: robust insertion for team unassign command.
+
+Build retry: fixed newline handling and roster command insertion.
