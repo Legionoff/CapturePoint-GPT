@@ -207,22 +207,17 @@ jobs:
 
           commands = Path("src/main/java/com/capturepoint/command/CapturePointCommands.java")
           c = commands.read_text()
-          anchor = 'dispatcher.register(Commands.literal("cappoint")'
-          if anchor not in c: raise SystemExit("cappoint dispatcher root not found")
-          insert = """dispatcher.register(Commands.literal("cappoint")
-              .then(Commands.literal("team").requires(ADMIN_PERMISSION)
-                  .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).executes(ctx -> {
-                      String playerName = StringArgumentType.getString(ctx, "player");
-                      ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
-                      if (target == null) { ctx.getSource().sendFailure(Component.literal("Player not found or offline.")); return 0; }
-                      CapturePointManager.unassign(target);
-                      ctx.getSource().sendSuccess(() -> Component.literal(playerName + " removed from teams."), false);
-                      return 1;
-                  })))
-              )
-          """
-          c = c.replace(anchor, insert, 1)
-          commands.write_text(c)
+          old_team_parse = """                    Team team; try { team=Team.valueOf(teamName.toUpperCase()); } catch (IllegalArgumentException e) { ctx.getSource().sendFailure(Component.literal("Team must be BLUE or RED.")); return 0; }
+                    CapturePointManager.assign(target,team); ctx.getSource().sendSuccess(() -> Component.literal(playerName+" assigned to "+team.name()+"."), false); return 1;"""
+          new_team_parse = """                    if (teamName.equalsIgnoreCase("NONE") || teamName.equalsIgnoreCase("UNASSIGNED")) {
+                        CapturePointManager.unassign(target);
+                        ctx.getSource().sendSuccess(() -> Component.literal(playerName + " removed from teams."), false);
+                        return 1;
+                    }
+                    Team team; try { team=Team.valueOf(teamName.toUpperCase()); } catch (IllegalArgumentException e) { ctx.getSource().sendFailure(Component.literal("Team must be BLUE, RED, or NONE.")); return 0; }
+                    CapturePointManager.assign(target,team); ctx.getSource().sendSuccess(() -> Component.literal(playerName+" assigned to "+team.name()+"."), false); return 1;"""
+          if old_team_parse not in c: raise SystemExit("team assignment handler not found")
+          commands.write_text(c.replace(old_team_parse, new_team_parse, 1))
 
           screen = Path("src/client/java/com/capturepoint/client/CapturePointAdminScreen.java")
           u = screen.read_text()
@@ -240,7 +235,7 @@ jobs:
           new_helper = old_helper + """
               private void removeFromTeam() {
                   if (playerName != null && playerName.getValue().trim().matches("[A-Za-z0-9_]{1,16}"))
-                      run("cappoint team remove " + playerName.getValue().trim());
+                      run("cappoint team set " + playerName.getValue().trim() + " NONE");
               }"""
           if old_helper not in u: raise SystemExit("team helper not found")
           u = u.replace(old_helper, new_helper, 1)
