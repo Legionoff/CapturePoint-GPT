@@ -53,5 +53,6 @@
   "gui.capturepoint.order_hint": "Reihenfolge",
   "gui.capturepoint.seconds_hint": "1–3600 Sekunden",
   "gui.capturepoint.list_rounds": "Gespeicherte Runden anzeigen",
-  "gui.capturepoint.back": "Zurück"
+  "gui.capturepoint.back": "Zurück",
+  "gui.capturepoint.remove_team": "Aus Team entfernen"
 }
