@@ -3,6 +3,8 @@ package com.capturepoint.command;
 import com.capturepoint.core.CapturePointManager;
 import com.capturepoint.core.CapturePointManager.PointDef;
 import com.capturepoint.core.CapturePointManager.Team;
+import com.capturepoint.network.CapturePointSyncPayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -24,6 +26,11 @@ public final class CapturePointCommands {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("cappoint")
+            .then(Commands.literal("ui").requires(ADMIN_PERMISSION).executes(ctx -> {
+                ServerPlayer viewer = ctx.getSource().getPlayerOrException();
+                ServerPlayNetworking.send(viewer, CapturePointSyncPayload.create(viewer));
+                return 1;
+            }))
             .then(Commands.literal("start").requires(ADMIN_PERMISSION).executes(ctx -> {
                 boolean ok = CapturePointManager.start();
                 ctx.getSource().sendSuccess(() -> Component.literal(ok ? "Capture Point round started." : "Cannot start: create complete points and set a valid center."), false);
