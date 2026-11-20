@@ -118,3 +118,5 @@ A successful CI compile does not replace in-game testing on Minecraft 26.3 with 
 The administrator panel now opens on a simplified home screen with dedicated Points, Teams, Round, and Saved Rounds sections.
 
 The home screen now focuses on the three primary areas: Points, Teams, and Round.
+
+Build note: corrected locale JSON output and tightened admin menu layout.
