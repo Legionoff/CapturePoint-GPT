@@ -52,7 +52,7 @@ public final class CapturePointAdminScreen extends Screen {
                     addRenderableWidget(button("gui.capturepoint.move_point", left + 75, y, 155, this::movePoint)); y += gap;
                     addRenderableWidget(button("gui.capturepoint.set_center", left, y, w, () -> withPoint("point center")));
                     addRenderableWidget(button("gui.capturepoint.remove_point", right, y, w, () -> withPoint("point remove"))); y += gap;
-                    addRenderableWidget(button("gui.capturepoint.list", left, y, 305, () -> run("cappoint list")));
+                    // Use /cappoint list for the roster; keep the setup controls clear of the footer.
                 }
                 case TEAMS -> {
                     playerName = edit(left, y, 305, "gui.capturepoint.player", "gui.capturepoint.player_hint"); y += gap;
