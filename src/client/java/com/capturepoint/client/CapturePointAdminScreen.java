@@ -185,11 +185,11 @@ public final class CapturePointAdminScreen extends Screen {
         addRenderableWidget(button("gui.capturepoint.resume", left, 104, col, 20, () -> run("cappoint resume")));
         addRenderableWidget(button("gui.capturepoint.stop", right, 104, col, 20, () -> run("cappoint stop")));
         addRenderableWidget(button("gui.capturepoint.status", left, 129, col, 20, () -> run("cappoint status")));
-        seconds = edit(left, 155, 110, "gui.capturepoint.seconds", "gui.capturepoint.seconds_hint");
+        seconds = edit(left, 155, 90, "gui.capturepoint.seconds", "gui.capturepoint.seconds_hint");
         seconds.setValue("60");
-        addRenderableWidget(button("gui.capturepoint.capture_time", left + 116, 155, col - 116, 20, () -> setTime("capture")));
-        addRenderableWidget(button("gui.capturepoint.hold_time", left, 181, col, 20, () -> setTime("hold")));
-        addRenderableWidget(button("gui.capturepoint.tab_saved", right, 181, col, 20, () -> open(Page.SAVED)));
+        addRenderableWidget(button("gui.capturepoint.capture_short", left + 96, 155, 98, 20, () -> setTime("capture")));
+        addRenderableWidget(button("gui.capturepoint.hold_short", left + 198, 155, width - left - 206, 20, () -> setTime("hold")));
+        addRenderableWidget(button("gui.capturepoint.tab_saved", left, 181, width - 16, 20, () -> open(Page.SAVED)));
     }
 
     private void initSaved() {
