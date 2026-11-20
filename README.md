@@ -112,3 +112,7 @@ The repository includes `.github/workflows/build.yml`. After pushing this projec
 To download a build: open the repository's **Actions** tab, select **Build Capture Point**, open a successful run, and download the `capturepoint-build-*` artifact. The JAR is inside the downloaded ZIP under `build/libs/`.
 
 A successful CI compile does not replace in-game testing on Minecraft 26.3 with the matching Fabric Loader and Fabric API.
+
+
+## Interface update
+The administrator panel now opens on a simplified home screen with dedicated Points, Teams, Round, and Saved Rounds sections.
