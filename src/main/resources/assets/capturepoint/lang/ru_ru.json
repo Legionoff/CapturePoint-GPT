@@ -54,5 +54,8 @@
   "gui.capturepoint.seconds_hint": "1–3600 секунд",
   "gui.capturepoint.list_rounds": "Список сохранённых раундов",
   "gui.capturepoint.back": "Назад",
-  "gui.capturepoint.remove_team": "Убрать из команды"
+  "gui.capturepoint.remove_team": "Убрать из команды",
+  "gui.capturepoint.add_point": "Добавить точку",
+  "gui.capturepoint.loading": "Загрузка данных сервера…",
+  "gui.capturepoint.no_points": "Точек пока нет"
 }
