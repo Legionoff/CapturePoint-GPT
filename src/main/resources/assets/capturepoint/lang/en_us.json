@@ -54,5 +54,8 @@
   "gui.capturepoint.seconds_hint": "1–3600 seconds",
   "gui.capturepoint.list_rounds": "List saved rounds",
   "gui.capturepoint.back": "Back",
-  "gui.capturepoint.remove_team": "Remove from team"
+  "gui.capturepoint.remove_team": "Remove from team",
+  "gui.capturepoint.add_point": "Add point",
+  "gui.capturepoint.loading": "Loading server data…",
+  "gui.capturepoint.no_points": "No points yet"
 }
