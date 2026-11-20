@@ -34,6 +34,7 @@ jobs:
           set -euo pipefail
           unzip -q CapturePoint-0.1.2-GitHub-Import.zip -d /tmp/capturepoint-import
           test -f /tmp/capturepoint-import/CapturePoint/src/main/java/com/capturepoint/core/CapturePointManager.java
+          rm -rf src
           cp -a /tmp/capturepoint-import/CapturePoint/src ./src
           cp /tmp/capturepoint-import/CapturePoint/build.gradle ./build.gradle
           cp /tmp/capturepoint-import/CapturePoint/gradle.properties ./gradle.properties
