@@ -5,6 +5,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import com.capturepoint.network.CapturePointSyncPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.network.chat.Component;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -14,6 +16,9 @@ public final class CapturePointClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ClientPlayNetworking.registerGlobalReceiver(CapturePointSyncPayload.TYPE, (payload, context) ->
+                context.client().execute(() -> CapturePointAdminScreen.acceptSnapshot(payload.json())));
+
         KeyMapping.Category category = KeyMapping.Category.register(
                 Identifier.fromNamespaceAndPath("capturepoint", "admin"));
         openMenuKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
@@ -30,6 +35,7 @@ public final class CapturePointClient implements ClientModInitializer {
                 boolean canUseAdminCommands = commandNode != null && commandNode.getChild("start") != null;
                 if (canUseAdminCommands) {
                     client.gui.setScreen(new CapturePointAdminScreen());
+                    command("cappoint ui");
                 } else {
                     client.player.sendOverlayMessage(Component.translatable("message.capturepoint.admin_only"));
                 }
