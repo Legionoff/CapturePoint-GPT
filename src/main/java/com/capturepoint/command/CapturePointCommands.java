@@ -66,7 +66,12 @@ public final class CapturePointCommands {
                     String playerName=StringArgumentType.getString(ctx,"player"); String teamName=StringArgumentType.getString(ctx,"team");
                     ServerPlayer target=ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
                     if (target==null) { ctx.getSource().sendFailure(Component.literal("Player not found or offline.")); return 0; }
-                    Team team; try { team=Team.valueOf(teamName.toUpperCase()); } catch (IllegalArgumentException e) { ctx.getSource().sendFailure(Component.literal("Team must be BLUE or RED.")); return 0; }
+                    if (teamName.equalsIgnoreCase("NONE") || teamName.equalsIgnoreCase("UNASSIGNED")) {
+                        CapturePointManager.unassign(target);
+                        ctx.getSource().sendSuccess(() -> Component.literal(playerName + " removed from teams."), false);
+                        return 1;
+                    }
+                    Team team; try { team=Team.valueOf(teamName.toUpperCase()); } catch (IllegalArgumentException e) { ctx.getSource().sendFailure(Component.literal("Team must be BLUE, RED, or NONE.")); return 0; }
                     CapturePointManager.assign(target,team); ctx.getSource().sendSuccess(() -> Component.literal(playerName+" assigned to "+team.name()+"."), false); return 1;
                 }))))
                 .then(Commands.literal("list").executes(ctx -> {
