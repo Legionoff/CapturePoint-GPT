@@ -394,6 +394,7 @@ public final class CapturePointManager {
         round.captureSeconds=Math.max(1,capture); round.holdSeconds=Math.max(1,hold); saveCurrent();
     }
     public static void assign(ServerPlayer player, Team team) { teams.put(player.getUUID(), team); saveTeams(); }
+    public static void unassign(ServerPlayer player) { teams.remove(player.getUUID()); saveTeams(); }
     public static void randomBalance() {
         if (server == null) return;
         List<ServerPlayer> players = new ArrayList<>(server.getPlayerList().getPlayers());
